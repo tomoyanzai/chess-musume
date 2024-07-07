@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>チェス娘</title>
+    <title>チェス娘 5x5ボード版</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -124,10 +124,10 @@
         ];
 
         const pieceStats = {
-            'K1': { hp: 100, maxHp: 100, atk: 30, def: 20, moveRange: 1, attackRange: [[-1,-1], [-1,0], [-1,1], [0,-1], [0,1], [1,-1], [1,0], [1,1]] },
-            'Q1': { hp: 80, maxHp: 80,  atk: 30, def: 10, moveRange: [ [0, -2], [0, -1], [0, 1], [0, 2], [-2, 0], [-1, 0], [1, 0], [2, 0], [-1, -1], [-1, 1], [1, -1], [1, 1] ], attackRange: [[0,-1], [0,1], [-1,0], [1,0]] },
-            'K2': { hp: 100, maxHp: 100, atk: 30, def: 20, moveRange: 1, attackRange: [[-1,-1], [-1,0], [-1,1], [0,-1], [0,1], [1,-1], [1,0], [1,1]] },
-            'Q2': { hp: 80, maxHp: 80,  atk: 30, def: 10, moveRange: [ [0, -2], [0, -1], [0, 1], [0, 2], [-2, 0], [-1, 0], [1, 0], [2, 0], [-1, -1], [-1, 1], [1, -1], [1, 1] ], attackRange: [[0,-1], [0,1], [-1,0], [1,0]] }
+            'K1': { hp: 100, maxHp: 100, atk: 30, def: 20, moveRange: [[-1,-1], [-1,0], [-1,1], [0,-1], [0,1], [1,-1], [1,0], [1,1]], attackRange: [[-1,-1], [-1,0], [-1,1], [0,-1], [0,1], [1,-1], [1,0], [1,1]] },
+            'Q1': { hp: 80, maxHp: 80, atk: 30, def: 10, moveRange: [[0, -2], [0, -1], [0, 1], [0, 2], [-2, 0], [-1, 0], [1, 0], [2, 0], [-1, -1], [-1, 1], [1, -1], [1, 1]], attackRange: [[0,-1], [0,1], [-1,0], [1,0]] },
+            'K2': { hp: 100, maxHp: 100, atk: 30, def: 20, moveRange: [[-1,-1], [-1,0], [-1,1], [0,-1], [0,1], [1,-1], [1,0], [1,1]], attackRange: [[-1,-1], [-1,0], [-1,1], [0,-1], [0,1], [1,-1], [1,0], [1,1]] },
+            'Q2': { hp: 80, maxHp: 80, atk: 30, def: 10, moveRange: [[0, -2], [0, -1], [0, 1], [0, 2], [-2, 0], [-1, 0], [1, 0], [2, 0], [-1, -1], [-1, 1], [1, -1], [1, 1]], attackRange: [[0,-1], [0,1], [-1,0], [1,0]] }
         };
 
         function createBoard() {
@@ -153,11 +153,9 @@
         function onCellClick(row, col) {
             const clickedPiece = gameBoard[row][col];
             if (clickedPiece && clickedPiece[1] == currentPlayer) {
-                // 自分の駒をクリックした場合、選択する
                 selectedPiece = { row, col, piece: clickedPiece };
                 updateBoard();
             } else if (selectedPiece) {
-                // 選択した駒を移動させる
                 movePiece(row, col);
             }
         }
@@ -181,7 +179,7 @@
             for (let [dx, dy] of attackRange) {
                 const targetRow = row + dx;
                 const targetCol = col + dy;
-                if (targetRow >= 0 && targetRow < 4 && targetCol >= 0 && targetCol < 4) {
+                if (targetRow >= 0 && targetRow < 5 && targetCol >= 0 && targetCol < 5) {
                     const targetPiece = gameBoard[targetRow][targetCol];
                     if (targetPiece && targetPiece[1] != currentPlayer) {
                         const damage = Math.max(0, pieceStats[piece].atk - pieceStats[targetPiece].def);
@@ -198,32 +196,32 @@
             checkWinCondition();
         }
 
-       function isValidMove(fromRow, fromCol, toRow, toCol) {
-          const piece = gameBoard[fromRow][fromCol];
-          const moveRange = pieceStats[piece].moveRange;
-          return moveRange.some(([dx, dy]) => 
-              fromRow + dx === toRow && fromCol + dy === toCol && gameBoard[toRow][toCol] === ''
-          );
-      }
+        function isValidMove(fromRow, fromCol, toRow, toCol) {
+            const piece = gameBoard[fromRow][fromCol];
+            const moveRange = pieceStats[piece].moveRange;
+            return moveRange.some(([dx, dy]) => 
+                fromRow + dx === toRow && fromCol + dy === toCol && gameBoard[toRow][toCol] === ''
+            );
+        }
 
         function updateBoard() {
             const cells = board.children;
-            for (let i = 0; i < 4; i++) {
-                for (let j = 0; j < 4; j++) {
-                    cells[i * 4 + j].innerHTML = '';
-                    cells[i * 4 + j].classList.remove('selected', 'highlight', 'attack-range');
+            for (let i = 0; i < 5; i++) {
+                for (let j = 0; j < 5; j++) {
+                    cells[i * 5 + j].innerHTML = '';
+                    cells[i * 5 + j].classList.remove('selected', 'highlight', 'attack-range');
                     const piece = gameBoard[i][j];
                     if (piece) {
-                        cells[i * 4 + j].textContent = piece;
+                        cells[i * 5 + j].textContent = piece;
                         const hpBar = document.createElement('div');
                         hpBar.className = 'hp-bar';
                         hpBar.style.width = `${(pieceStats[piece].hp / pieceStats[piece].maxHp) * 100}%`;
-                        cells[i * 4 + j].appendChild(hpBar);
+                        cells[i * 5 + j].appendChild(hpBar);
                     }
                 }
             }
             if (selectedPiece) {
-                cells[selectedPiece.row * 4 + selectedPiece.col].classList.add('selected');
+                cells[selectedPiece.row * 5 + selectedPiece.col].classList.add('selected');
                 highlightValidMoves(selectedPiece.row, selectedPiece.col);
                 highlightAttackRange(selectedPiece.row, selectedPiece.col);
             }
@@ -233,11 +231,11 @@
             const cells = board.children;
             const piece = gameBoard[row][col];
             const moveRange = pieceStats[piece].moveRange;
-            for (let i = 0; i < 4; i++) {
-                for (let j = 0; j < 4; j++) {
-                    if (isValidMove(row, col, i, j)) {
-                        cells[i * 4 + j].classList.add('highlight');
-                    }
+            for (let [dx, dy] of moveRange) {
+                const newRow = row + dx;
+                const newCol = col + dy;
+                if (newRow >= 0 && newRow < 5 && newCol >= 0 && newCol < 5 && gameBoard[newRow][newCol] === '') {
+                    cells[newRow * 5 + newCol].classList.add('highlight');
                 }
             }
         }
@@ -249,8 +247,8 @@
             for (let [dx, dy] of attackRange) {
                 const targetRow = row + dx;
                 const targetCol = col + dy;
-                if (targetRow >= 0 && targetRow < 4 && targetCol >= 0 && targetCol < 4) {
-                    cells[targetRow * 4 + targetCol].classList.add('attack-range');
+                if (targetRow >= 0 && targetRow < 5 && targetCol >= 0 && targetCol < 5) {
+                    cells[targetRow * 5 + targetCol].classList.add('attack-range');
                 }
             }
         }
@@ -288,10 +286,11 @@
 
         function restartGame() {
             gameBoard = [
-                ['K1', 'Q1', '', ''],
-                ['', '', '', ''],
-                ['', '', '', ''],
-                ['', '', 'Q2', 'K2']
+                ['', 'K1', 'Q1', '', ''],
+                ['', '', '', '', ''],
+                ['', '', '', '', ''],
+                ['', '', '', '', ''],
+                ['', '', 'Q2', 'K2','']
             ];
             pieceStats['K1'].hp = pieceStats['K1'].maxHp;
             pieceStats['Q1'].hp = pieceStats['Q1'].maxHp;

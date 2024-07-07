@@ -115,21 +115,19 @@
         let currentPlayer = 1;
         let selectedPiece = null;
         let ap = 3;
-   let gameBoard = [
-            ['N1', 'K1', 'Q1', '', ''],
+        let gameBoard = [
+            ['', 'K1', 'Q1', '', ''],
             ['', '', '', '', ''],
             ['', '', '', '', ''],
             ['', '', '', '', ''],
-            ['', '', 'Q2', 'K2', 'N2']
+            ['', '', 'Q2', 'K2','']
         ];
 
         const pieceStats = {
             'K1': { hp: 100, maxHp: 100, atk: 30, def: 20, moveRange: [[-1,-1], [-1,0], [-1,1], [0,-1], [0,1], [1,-1], [1,0], [1,1]], attackRange: [[-1,-1], [-1,0], [-1,1], [0,-1], [0,1], [1,-1], [1,0], [1,1]] },
             'Q1': { hp: 80, maxHp: 80, atk: 30, def: 10, moveRange: [[0, -2], [0, -1], [0, 1], [0, 2], [-2, 0], [-1, 0], [1, 0], [2, 0], [-1, -1], [-1, 1], [1, -1], [1, 1]], attackRange: [[0,-1], [0,1], [-1,0], [1,0]] },
-            'N1': { hp: 70, maxHp: 70, atk: 25, def: 15, moveRange: [[-2,-1], [-2,1], [-1,-2], [-1,2], [1,-2], [1,2], [2,-1], [2,1]], attackRange: [[-2,-1], [-2,1], [-1,-2], [-1,2], [1,-2], [1,2], [2,-1], [2,1]] },
             'K2': { hp: 100, maxHp: 100, atk: 30, def: 20, moveRange: [[-1,-1], [-1,0], [-1,1], [0,-1], [0,1], [1,-1], [1,0], [1,1]], attackRange: [[-1,-1], [-1,0], [-1,1], [0,-1], [0,1], [1,-1], [1,0], [1,1]] },
-            'Q2': { hp: 80, maxHp: 80, atk: 30, def: 10, moveRange: [[0, -2], [0, -1], [0, 1], [0, 2], [-2, 0], [-1, 0], [1, 0], [2, 0], [-1, -1], [-1, 1], [1, -1], [1, 1]], attackRange: [[0,-1], [0,1], [-1,0], [1,0]] },
-            'N2': { hp: 70, maxHp: 70, atk: 25, def: 15, moveRange: [[-2,-1], [-2,1], [-1,-2], [-1,2], [1,-2], [1,2], [2,-1], [2,1]], attackRange: [[-2,-1], [-2,1], [-1,-2], [-1,2], [1,-2], [1,2], [2,-1], [2,1]] }
+            'Q2': { hp: 80, maxHp: 80, atk: 30, def: 10, moveRange: [[0, -2], [0, -1], [0, 1], [0, 2], [-2, 0], [-1, 0], [1, 0], [2, 0], [-1, -1], [-1, 1], [1, -1], [1, 1]], attackRange: [[0,-1], [0,1], [-1,0], [1,0]] }
         };
 
         function createBoard() {
@@ -151,7 +149,7 @@
                 }
             }
         }
-        
+
         function onCellClick(row, col) {
             const clickedPiece = gameBoard[row][col];
             if (clickedPiece && clickedPiece[1] == currentPlayer) {
@@ -288,15 +286,16 @@
 
         function restartGame() {
             gameBoard = [
-                ['N1', 'K1', 'Q1', '', ''],
+                ['', 'K1', 'Q1', '', ''],
                 ['', '', '', '', ''],
                 ['', '', '', '', ''],
                 ['', '', '', '', ''],
-                ['', '', 'Q2', 'K2', 'N2']
+                ['', '', 'Q2', 'K2','']
             ];
-            for (let piece in pieceStats) {
-                pieceStats[piece].hp = pieceStats[piece].maxHp;
-            }
+            pieceStats['K1'].hp = pieceStats['K1'].maxHp;
+            pieceStats['Q1'].hp = pieceStats['Q1'].maxHp;
+            pieceStats['K2'].hp = pieceStats['K2'].maxHp;
+            pieceStats['Q2'].hp = pieceStats['Q2'].maxHp;
             currentPlayer = 1;
             ap = 3;
             selectedPiece = null;
@@ -306,6 +305,13 @@
             statusDisplay.textContent = 'プレイヤー1のターン';
             actionLog.innerHTML = '';
             gameOverScreen.style.display = 'none';
+        }
+
+        function logAction(message) {
+            const logEntry = document.createElement('div');
+            logEntry.textContent = message;
+            actionLog.appendChild(logEntry);
+            actionLog.scrollTop = actionLog.scrollHeight;
         }
 
         endTurnBtn.addEventListener('click', () => {

@@ -19,8 +19,8 @@
         }
         #board {
             display: grid;
-            grid-template-columns: repeat(4, 80px);
-            grid-template-rows: repeat(4, 80px);
+            grid-template-columns: repeat(5, 80px);
+            grid-template-rows: repeat(5, 80px);
             gap: 2px;
             background-color: #888;
             padding: 2px;
@@ -125,15 +125,15 @@
 
         const pieceStats = {
             'K1': { hp: 100, maxHp: 100, atk: 30, def: 20, moveRange: 1, attackRange: [[-1,-1], [-1,0], [-1,1], [0,-1], [0,1], [1,-1], [1,0], [1,1]] },
-            'Q1': { hp: 80, maxHp: 80, atk: 30, def: 10, moveRange: 2, attackRange: [[0,-1], [0,1], [-1,0], [1,0]] },
+            'Q1': { hp: 80, maxHp: 80,  atk: 30, def: 10, moveRange: [ [0, -2], [0, -1], [0, 1], [0, 2], [-2, 0], [-1, 0], [1, 0], [2, 0], [-1, -1], [-1, 1], [1, -1], [1, 1] ], attackRange: [[0,-1], [0,1], [-1,0], [1,0]] },
             'K2': { hp: 100, maxHp: 100, atk: 30, def: 20, moveRange: 1, attackRange: [[-1,-1], [-1,0], [-1,1], [0,-1], [0,1], [1,-1], [1,0], [1,1]] },
-            'Q2': { hp: 80, maxHp: 80, atk: 30, def: 10, moveRange: 2, attackRange: [[0,-1], [0,1], [-1,0], [1,0]] }
+            'Q2': { hp: 80, maxHp: 80,  atk: 30, def: 10, moveRange: [ [0, -2], [0, -1], [0, 1], [0, 2], [-2, 0], [-1, 0], [1, 0], [2, 0], [-1, -1], [-1, 1], [1, -1], [1, 1] ], attackRange: [[0,-1], [0,1], [-1,0], [1,0]] }
         };
 
         function createBoard() {
             board.innerHTML = '';
-            for (let i = 0; i < 4; i++) {
-                for (let j = 0; j < 4; j++) {
+            for (let i = 0; i < 5; i++) {
+                for (let j = 0; j < 5; j++) {
                     const cell = document.createElement('div');
                     cell.className = 'cell';
                     const piece = gameBoard[i][j];
@@ -198,12 +198,13 @@
             checkWinCondition();
         }
 
-        function isValidMove(fromRow, fromCol, toRow, toCol) {
-            const piece = gameBoard[fromRow][fromCol];
-            const moveRange = pieceStats[piece].moveRange;
-            const distance = Math.max(Math.abs(fromRow - toRow), Math.abs(fromCol - toCol));
-            return distance <= moveRange && gameBoard[toRow][toCol] === '';
-        }
+       function isValidMove(fromRow, fromCol, toRow, toCol) {
+          const piece = gameBoard[fromRow][fromCol];
+          const moveRange = pieceStats[piece].moveRange;
+          return moveRange.some(([dx, dy]) => 
+              fromRow + dx === toRow && fromCol + dy === toCol && gameBoard[toRow][toCol] === ''
+          );
+      }
 
         function updateBoard() {
             const cells = board.children;
